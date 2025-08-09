@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
@@ -18,12 +20,14 @@ public class Token {
     private Long id;
 
     private String token;
+    @CreatedDate
     private LocalDateTime issuedAt;
     private LocalDateTime expiresAt;
+    @LastModifiedDate
     private LocalDateTime validatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "auth_user_id")
+    @JoinColumn(name = "auth_user_id",nullable = false)
     @JsonBackReference
     private User user;
 
