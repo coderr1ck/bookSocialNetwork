@@ -36,6 +36,7 @@ spring:
         timeout: 3000
         writetimeout: 5000
 
+
   security:
     oauth2:
       resourceserver:
@@ -46,6 +47,10 @@ application:
   file:
     uploads:
       photos-output-path: ./uploads
+  security:
+    jwt:
+      secret-key: YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXoxMjM0NTY3ODkwYWJjZGVmZ2hpamtsbW5vcA==
+      expiration: 36000000
 
 server:
   port: 4003
