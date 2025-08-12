@@ -20,17 +20,20 @@ public class AuthenticationController {
 
     @PostMapping("register")
     public ResponseEntity<?> register(@Validated({Default.class, RegisterRequestHandler.class}) @RequestBody AuthRequestHandler registerRequestData) {
-        authenticationService.registerUser(registerRequestData);
-        return ResponseEntity.ok("User registered successfully");
+        return authenticationService.registerUser(registerRequestData);
+//        return ResponseEntity.ok("User registered successfully");
     }
 
     @PostMapping("login")
-    public ResponseEntity<?> login(@Validated @RequestBody AuthRequestHandler loginRequestData) {
-        return ResponseEntity.ok("User logged in successfully");
+    public ResponseEntity<?> login(@Validated({Default.class}) @RequestBody AuthRequestHandler loginRequestData) {
+        return authenticationService.loginUser(loginRequestData);
+//        return ResponseEntity.ok("User logged in successfully");
     }
 
-    @GetMapping("logout")
-    public ResponseEntity<?> logout() {
-        return ResponseEntity.ok("User logged out successfully");
+    @GetMapping("activate-account/{code}")
+    public ResponseEntity<?> activateAccount(
+                   @PathVariable String code
+    ) {
+        return authenticationService.activateAccount(code);
     }
 }

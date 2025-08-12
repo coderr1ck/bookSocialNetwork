@@ -7,7 +7,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
@@ -23,7 +22,7 @@ public class EmailService {
 
     @Async
     public void sendEmail(String to,String username,String activationCode,String subject,String confirmationUrl) throws MessagingException {
-        String templateName = "activate-account";
+        String templateName = "activate_account";
         Map<String,Object> properties = new HashMap<>();
         properties.put("username",username); // this and template variable should be same
         properties.put("activation_code",activationCode);

@@ -2,10 +2,7 @@ package com.coderrr1ck.bookBackend.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -16,6 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @Builder
+@ToString(exclude={"user"})
 public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

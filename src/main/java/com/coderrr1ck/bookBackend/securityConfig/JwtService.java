@@ -66,6 +66,7 @@ public class JwtService {
     public String generateToken(UserDetails userDetails) {
         return generateTokenWithClaimsAndExpiration(new HashMap<>(),userDetails,jwtExpiration);
     }
+
     public String generateTokenWithClaimsAndExpiration(HashMap<String, Object> claims, UserDetails userDetails , long jwtExpiration) {
         var authorities = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -80,6 +81,10 @@ public class JwtService {
                 .signWith(SignatureAlgorithm.HS256, getSecretKey())
                 .compact();
     }
+    public String generateTokenWithClaimsAndUser(HashMap<String, Object> claims, UserDetails userDetails ){
+        return generateTokenWithClaimsAndExpiration(claims,userDetails,jwtExpiration);
+    }
+
     public Key getSecretKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);

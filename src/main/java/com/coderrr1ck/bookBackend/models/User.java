@@ -3,10 +3,7 @@ package com.coderrr1ck.bookBackend.models;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -29,6 +26,7 @@ import java.util.stream.Collectors;
 @Table(name = "auth_user")
 @EntityListeners(AuditingEntityListener.class)
 @Builder
+@ToString(exclude = {"roles", "tokens"})
 public class User implements UserDetails, Principal {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -112,7 +110,7 @@ public class User implements UserDetails, Principal {
         return isActive;
     }
 
-    private String getFullName() {
+    public String getFullName() {
         return firstname + " " + lastname;
     }
 }
