@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Table(name = "auth_user")
 @EntityListeners(AuditingEntityListener.class)
+@Builder
 public class User implements UserDetails, Principal {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

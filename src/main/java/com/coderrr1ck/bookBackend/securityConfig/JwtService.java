@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +27,7 @@ public class JwtService {
 
     @PostConstruct
     public void checkFields(){
+        System.out.println("JwtService initialized with:");
         System.out.println("JwtExpiration : "+ jwtExpiration);
         System.out.println("SecretKey : "+ secretKey);
     }

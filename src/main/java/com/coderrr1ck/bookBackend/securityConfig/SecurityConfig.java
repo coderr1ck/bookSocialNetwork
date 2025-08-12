@@ -42,7 +42,8 @@ public class SecurityConfig {
                                 "/configuration/security",
                                 "/swagger-ui/**",
                                 "/webjars/**",
-                                "/swagger-ui.html"
+                                "/swagger-ui.html",
+                                "/error" // use this when you don't have your custom exception handler
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

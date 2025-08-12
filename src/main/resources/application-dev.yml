@@ -21,9 +21,9 @@ spring:
       mode: always  # Always run schema/data SQL files
 
   mail:
-    host: localhost
+    host: smtp.gmail.com
     port: 1025
-    username: test
+    username: ritikplayer786@gmail.com
     password: test
     properties:
       mail:
