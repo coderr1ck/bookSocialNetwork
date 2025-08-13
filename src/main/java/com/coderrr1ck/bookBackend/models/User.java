@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "auth_user")
-@EntityListeners(AuditingEntityListener.class)
 @Builder
 @ToString(exclude = {"roles", "tokens"})
+@EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails, Principal {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

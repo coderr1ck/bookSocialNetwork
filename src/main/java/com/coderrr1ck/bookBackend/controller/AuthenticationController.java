@@ -31,6 +31,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("activate-account/{code}")
+//    redirect to front-end url from there we will make bacckend api call
     public ResponseEntity<?> activateAccount(
                    @PathVariable String code
     ) {
