@@ -1,6 +1,7 @@
 package com.coderrr1ck.bookBackend.models;
 
 import com.coderrr1ck.bookBackend.models.common.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -46,8 +47,16 @@ public class Book extends BaseEntity {
 
     private boolean isActive = true;
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
     @OneToMany(mappedBy = "book" )
     @JsonManagedReference
     private List<Feedback> feedbacks;
+
+    @OneToMany(mappedBy = "book_id", fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<BookTransactionHistory> bookTransactions;
 
 }

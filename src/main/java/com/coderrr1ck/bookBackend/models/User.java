@@ -1,5 +1,6 @@
 package com.coderrr1ck.bookBackend.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -71,6 +72,17 @@ public class User implements UserDetails, Principal {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Token> tokens;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<Book> books;
+
+    @OneToMany(mappedBy = "user_id", fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<BookTransactionHistory> bookTransactions;
+
+
+
 
     @Override
     public String getName() {
