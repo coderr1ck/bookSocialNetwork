@@ -1,6 +1,7 @@
 package com.coderrr1ck.bookBackend.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -66,7 +67,7 @@ public class User implements UserDetails, Principal {
         joinColumns = @JoinColumn(name = "auth_user_id"),
         inverseJoinColumns = @JoinColumn(name = "auth_role_id")
     )
-    @JsonManagedReference
+    @JsonIgnore
     private List<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -74,11 +75,11 @@ public class User implements UserDetails, Principal {
     private List<Token> tokens;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonManagedReference("user-books")
     private List<Book> books;
 
-    @OneToMany(mappedBy = "user_id", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonManagedReference("user-transactions")
     private List<BookTransactionHistory> bookTransactions;
 
 

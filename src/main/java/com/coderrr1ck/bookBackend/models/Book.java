@@ -49,14 +49,16 @@ public class Book extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
+    @JsonBackReference("user-books")
+    @NotNull
     private User owner;
 
     @OneToMany(mappedBy = "book" )
     @JsonManagedReference
     private List<Feedback> feedbacks;
 
-    @OneToMany(mappedBy = "book_id", fetch = FetchType.LAZY)
-    @JsonBackReference
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+    @JsonManagedReference("book-transactions")
     private List<BookTransactionHistory> bookTransactions;
 
 }

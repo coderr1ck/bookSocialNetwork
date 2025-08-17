@@ -1,6 +1,7 @@
 package com.coderrr1ck.bookBackend.models;
 
 import com.coderrr1ck.bookBackend.models.common.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -19,13 +20,13 @@ public class BookTransactionHistory extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonManagedReference
-    private User user_id;
+    @JsonBackReference("user-transactions")
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "book_id")
-    @JsonManagedReference
-    private Book book_id;
+    @JsonBackReference("book-transactions")
+    private Book book;
 
     private boolean isReturned;
     private boolean isReturnApproved;

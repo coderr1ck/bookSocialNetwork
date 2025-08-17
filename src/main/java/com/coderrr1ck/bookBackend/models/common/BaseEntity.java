@@ -2,10 +2,7 @@ package com.coderrr1ck.bookBackend.models.common;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,8 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,9 +34,9 @@ public class BaseEntity {
 
     @CreatedBy
     @Column(nullable = false,updatable = false)
-    private UUID createdBy;
+    private String createdBy;
 
     @LastModifiedBy
     @Column(insertable = false)
-    private LocalDate lastModifiedBy;
+    private String lastModifiedBy;
 }
