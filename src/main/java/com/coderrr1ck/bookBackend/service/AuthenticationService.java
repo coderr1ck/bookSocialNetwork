@@ -97,7 +97,7 @@ public class AuthenticationService {
                         loginRequestData.getPassword()
                 )
         ); // returns authentication object
-        System.out.println(auth);
+//        System.out.println(auth);
         var user = ((User)auth.getPrincipal());
         var claims = new HashMap<String,Object>();
         claims.put("fullName",user.getFullName());

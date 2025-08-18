@@ -1,12 +1,10 @@
 package com.coderrr1ck.bookBackend.controller;
 
 
-import com.coderrr1ck.bookBackend.authDTOs.BookRequestDTO;
+import com.coderrr1ck.bookBackend.bookDTOs.BookRequestDTO;
 import com.coderrr1ck.bookBackend.service.BookService;
-import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +25,8 @@ public class BookController {
     public ResponseEntity<?> getAllBooks(){
         return bookService.getAllBooks();
     }
-    @GetMapping({"{id}"})
+
+    @GetMapping("{id}")
     public ResponseEntity<?> getBookById(
             @PathVariable("id") UUID bookId
     ){
@@ -36,9 +35,10 @@ public class BookController {
 
     @PutMapping("{id}")
     public ResponseEntity<?> updateBookById(
-            @PathVariable UUID uuid
+            @PathVariable("id") UUID bookId,
+            @Valid @RequestBody BookRequestDTO bookRequestDTO
     ){
-        return bookService.updateBookById();
+        return bookService.updateBookById(bookId,bookRequestDTO);
     }
 
     @PostMapping
@@ -48,8 +48,11 @@ public class BookController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return bookService.createBook(bookRequestDTO,authentication);
     }
-    @DeleteMapping
-    public ResponseEntity<?> deleteBookById(){
-        return bookService.deleteBookById();
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteBookById(
+            @PathVariable("id") UUID bookId
+    ){
+        return bookService.deleteBookById(bookId);
     }
 }
