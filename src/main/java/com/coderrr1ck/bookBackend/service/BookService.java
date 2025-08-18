@@ -7,6 +7,8 @@ import com.coderrr1ck.bookBackend.models.Book;
 import com.coderrr1ck.bookBackend.models.User;
 import com.coderrr1ck.bookBackend.repository.BookRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -35,34 +37,26 @@ public class BookService {
     }
 
     public ResponseEntity<?> updateBookById(UUID bookId, BookRequestDTO bookRequestDTO) {
-//        Book book = bookRepository.findById(bookId).orElseThrow(()->new RuntimeException(BOOK_NOT_FOUND));
-//        book.setTitle(bookRequestDTO.getTitle());
-//        book.setIsbn(bookRequestDTO.getIsbn());
-//        book.setAuthorName(bookRequestDTO.getAuthorName());
-//        book.setBookCover(bookRequestDTO.getBookCover());
-//        book.setSynopsis(bookRequestDTO.getSynopsis());
-//        bookRepository.save(book);
         return ResponseEntity.ok("Book Updated");
     }
 
-    public ResponseEntity<?> createBook(BookRequestDTO bookRequestDTO, Authentication authenticatedUser) {
+    public UUID createBook(BookRequestDTO bookRequestDTO, Authentication authenticatedUser) {
             User curr_user = (User) authenticatedUser.getPrincipal();
             Book new_book = mapper.toBook(bookRequestDTO);
             new_book.setOwner(curr_user);
             Book saved_book = bookRepository.save(new_book);
 //           send api response in header location containing uuid of created book.
-            return ResponseEntity.created(URI.create(String.valueOf(saved_book.getId()))).build();
+            return saved_book.getId();
     }
 
-    public ResponseEntity<?> deleteBookById(UUID bookId) {
+    public void deleteBookById(UUID bookId) {
         bookRepository.deleteById(bookId);
-        return ResponseEntity.noContent().build();
     }
 
-    public ResponseEntity<BookResponseDTO> getBookById(UUID bookId) {
+    public BookResponseDTO getBookById(UUID bookId) {
         Book book = bookRepository.findById(bookId).orElseThrow(()->
             new RuntimeException(BOOK_NOT_FOUND)
         );
-        return ResponseEntity.ok(mapper.toBookResponse(book));
+        return mapper.toBookResponse(book);
     }
 }
