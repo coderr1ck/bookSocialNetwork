@@ -1,22 +1,24 @@
 package com.coderrr1ck.bookBackend.service;
 
+import com.coderrr1ck.bookBackend.beansConfig.PageResponse;
 import com.coderrr1ck.bookBackend.bookDTOs.BookMapper;
 import com.coderrr1ck.bookBackend.bookDTOs.BookRequestDTO;
 import com.coderrr1ck.bookBackend.bookDTOs.BookResponseDTO;
+import com.coderrr1ck.bookBackend.exceptions.EntityNotFoundException;
 import com.coderrr1ck.bookBackend.models.Book;
 import com.coderrr1ck.bookBackend.models.User;
+import com.coderrr1ck.bookBackend.models.common.BookSpecification;
 import com.coderrr1ck.bookBackend.repository.BookRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.net.URI;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -30,10 +32,19 @@ public class BookService {
     }
 
 
-    public ResponseEntity<?> getAllBooks() {
-        List<Book> books = bookRepository.findAll();
-        List<BookResponseDTO> _books = books.stream().map(mapper::toBookResponse).collect(Collectors.toList());
-        return ResponseEntity.ok(_books);
+    public PageResponse<BookResponseDTO> getAllBooks(int page, int size, Authentication authentication, boolean owner) {
+        User user = (User) authentication.getPrincipal();
+        Pageable pageable = PageRequest.of(page,size, Sort.by("createdDate").descending());
+        Page<Book> books = bookRepository.findAllDisplayableBooks(pageable,String.valueOf(user.getId()));
+        List<BookResponseDTO> _books = books.stream().map(mapper::toBookResponse).toList();
+        return new PageResponse<>(
+                _books,
+                page,
+                size,
+                books.getTotalElements(),
+                books.getTotalPages(),
+                books.isFirst(),
+                books.isLast());
     }
 
     public ResponseEntity<?> updateBookById(UUID bookId, BookRequestDTO bookRequestDTO) {
@@ -55,8 +66,23 @@ public class BookService {
 
     public BookResponseDTO getBookById(UUID bookId) {
         Book book = bookRepository.findById(bookId).orElseThrow(()->
-            new RuntimeException(BOOK_NOT_FOUND)
+            new EntityNotFoundException(BOOK_NOT_FOUND)
         );
         return mapper.toBookResponse(book);
+    }
+
+    public PageResponse<BookResponseDTO> findAllBooksByOwner(int page, int size, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        Pageable pageable = PageRequest.of(page,size, Sort.by("createdDate").descending());
+        Page<Book> books = bookRepository.findAll(BookSpecification.withOwnerId(user),pageable);
+        List<BookResponseDTO> _books = books.stream().map(mapper::toBookResponse).toList();
+        return new PageResponse<>(
+                _books,
+                page,
+                size,
+                books.getTotalElements(),
+                books.getTotalPages(),
+                books.isFirst(),
+                books.isLast());
     }
 }
