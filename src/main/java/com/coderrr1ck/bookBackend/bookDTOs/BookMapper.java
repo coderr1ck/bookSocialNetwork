@@ -2,6 +2,7 @@ package com.coderrr1ck.bookBackend.bookDTOs;
 
 import com.coderrr1ck.bookBackend.bookDTOs.BookRequestDTO;
 import com.coderrr1ck.bookBackend.models.Book;
+import com.coderrr1ck.bookBackend.models.BookTransactionHistory;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -34,15 +35,15 @@ public class BookMapper {
                 .build();
     }
 
-//    public BorrowedBookResponse toBorrowedBookResponse(BookTransactionHistory history) {
-//        return BorrowedBookResponse.builder()
-//                .id(history.getBook().getId())
-//                .title(history.getBook().getTitle())
-//                .authorName(history.getBook().getAuthorName())
-//                .isbn(history.getBook().getIsbn())
-//                .rate(history.getBook().getRate())
-//                .returned(history.isReturned())
-//                .returnApproved(history.isReturnApproved())
-//                .build();
-//    }
+    public BorrowedBookResponseDTO toBorrowedBookResponse(BookTransactionHistory history) {
+        return BorrowedBookResponseDTO.builder()
+                .id(history.getBook().getId())
+                .title(history.getBook().getTitle())
+                .authorName(history.getBook().getAuthorName())
+                .isbn(history.getBook().getIsbn())
+                .rate(history.getBook().getRate())
+                .returned(history.isReturned())
+                .returnApproved(history.isReturnApproved())
+                .build();
+    }
 }

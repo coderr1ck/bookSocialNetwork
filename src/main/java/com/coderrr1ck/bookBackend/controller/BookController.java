@@ -4,6 +4,7 @@ package com.coderrr1ck.bookBackend.controller;
 import com.coderrr1ck.bookBackend.beansConfig.PageResponse;
 import com.coderrr1ck.bookBackend.bookDTOs.BookRequestDTO;
 import com.coderrr1ck.bookBackend.bookDTOs.BookResponseDTO;
+import com.coderrr1ck.bookBackend.bookDTOs.BorrowedBookResponseDTO;
 import com.coderrr1ck.bookBackend.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -74,6 +75,24 @@ public class BookController {
             Authentication connectedUser
     ) {
         return ResponseEntity.ok(bookService.findAllBooksByOwner(page, size, connectedUser));
+    }
+    @GetMapping("/borrowed")
+    public ResponseEntity<PageResponse<BorrowedBookResponseDTO>> findAllBooksBorrowedByUser(
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) int size,
+            Authentication connectedUser
+    ) {
+        return ResponseEntity.ok(bookService.findAllBooksBorrowedByUser(page, size, connectedUser));
+    }
+
+
+
+    @GetMapping("borrow/{id}")
+    public ResponseEntity<Void> borrowBook(
+            @PathVariable("id") UUID bookId
+    ){
+        bookService.borrowBook(bookId);
+        return ResponseEntity.ok().build();
     }
 
 }

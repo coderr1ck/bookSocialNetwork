@@ -25,7 +25,7 @@ import java.util.UUID;
 public class Feedback extends BaseEntity {
 
     @NotNull
-    private String note;
+    private double note;
 
     @NotNull
     private String comment;

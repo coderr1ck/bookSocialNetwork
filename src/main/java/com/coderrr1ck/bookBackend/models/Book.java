@@ -61,4 +61,16 @@ public class Book extends BaseEntity {
     @JsonManagedReference("book-transactions")
     private List<BookTransactionHistory> bookTransactions;
 
+    public double getRate() {
+        if(this.feedbacks == null || this.feedbacks.isEmpty()){
+            return 0.0;
+        }
+        double avgFeedback = this.feedbacks
+                .stream()
+                .mapToDouble(Feedback::getNote)
+                .average()
+                .orElse(0.0);
+        double roundedRate = Math.round(avgFeedback * 10)/10.0;
+        return roundedRate;
+    }
 }

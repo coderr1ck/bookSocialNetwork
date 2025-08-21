@@ -4,11 +4,15 @@ import com.coderrr1ck.bookBackend.beansConfig.PageResponse;
 import com.coderrr1ck.bookBackend.bookDTOs.BookMapper;
 import com.coderrr1ck.bookBackend.bookDTOs.BookRequestDTO;
 import com.coderrr1ck.bookBackend.bookDTOs.BookResponseDTO;
+import com.coderrr1ck.bookBackend.bookDTOs.BorrowedBookResponseDTO;
 import com.coderrr1ck.bookBackend.exceptions.EntityNotFoundException;
 import com.coderrr1ck.bookBackend.models.Book;
+import com.coderrr1ck.bookBackend.models.BookTransactionHistory;
 import com.coderrr1ck.bookBackend.models.User;
 import com.coderrr1ck.bookBackend.models.common.BookSpecification;
 import com.coderrr1ck.bookBackend.repository.BookRepository;
+import com.coderrr1ck.bookBackend.repository.BookTransactionHistoryRepository;
+import org.hibernate.cache.spi.support.CacheUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,10 +29,12 @@ public class BookService {
     private final String BOOK_NOT_FOUND = "Book Not Found ";
     private final BookMapper mapper;
     private final BookRepository bookRepository;
+    private final BookTransactionHistoryRepository bookTransactionHistoryRepository;
 
-    public BookService(BookRepository bookRepository, BookMapper mapper){
+    public BookService(BookRepository bookRepository, BookMapper mapper,BookTransactionHistoryRepository bookTransactionHistoryRepository){
         this.mapper  = mapper;
         this.bookRepository = bookRepository;
+        this.bookTransactionHistoryRepository = bookTransactionHistoryRepository;
     }
 
 
@@ -84,5 +90,37 @@ public class BookService {
                 books.getTotalPages(),
                 books.isFirst(),
                 books.isLast());
+    }
+
+    public void borrowBook(UUID bookId) {
+        Book book = bookRepository.findById(bookId).orElseThrow(()->{
+            throw new EntityNotFoundException(BOOK_NOT_FOUND);
+        });
+//        if it is sharable or archived you cannot borrow it ,
+//        if your are owner you cannot boorow it,
+//        if it is already borrowed by someoneElse and not returned you cannot borrow it,
+//        if it is already borrowed by the borrower himself it cannot be borrowed again,
+//        finally borrow the book  , this you have to think as a developer.
+
+        boolean isSharable = book.isSharable();
+        if(isSharable){}
+        return ;
+
+    }
+
+    public PageResponse<BorrowedBookResponseDTO> findAllBooksBorrowedByUser(int page, int size, Authentication connectedUser) {
+        User user = (User) connectedUser.getPrincipal();
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdDate").descending());
+        Page<BookTransactionHistory> borrowedBooks  = bookTransactionHistoryRepository.findAllBorrowedBooks(pageable,user.getId());
+        List<BorrowedBookResponseDTO> borrowedResponse = borrowedBooks.stream().map(mapper::toBorrowedBookResponse).toList();
+        return new PageResponse<>(
+                borrowedResponse,
+                page,
+                size,
+                borrowedBooks.getTotalElements(),
+                borrowedBooks.getTotalPages(),
+                borrowedBooks.isFirst(),
+                borrowedBooks.isLast()
+        );
     }
 }
