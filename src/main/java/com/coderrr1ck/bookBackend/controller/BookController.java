@@ -104,6 +104,16 @@ public class BookController {
         return ResponseEntity.created(URI.create(String.valueOf(updatedBookId))).build();
     }
 
+    @PatchMapping("archive/{book-id}")
+    public ResponseEntity<Void> updateArchived(
+            @PathVariable("book-id") UUID bookId,
+            Authentication authentication
+    ) throws OperationNotSupportedException {
+        UUID updatedBookId = bookService.updateBookArchived(bookId,authentication);
+        return ResponseEntity.created(URI.create(String.valueOf(updatedBookId))).build();
+    }
+
+
 
 
 

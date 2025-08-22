@@ -154,4 +154,17 @@ public class BookService {
         bookRepository.save(book);
         return book.getId();
     }
+
+    public UUID updateBookArchived(UUID bookId, Authentication authentication) throws OperationNotSupportedException {
+        User user  = (User) authentication.getPrincipal();
+        Book book = bookRepository.findById(bookId).orElseThrow(()->{
+            throw  new EntityNotFoundException(BOOK_NOT_FOUND);
+        });
+        if (!book.getOwner().getId().equals(user.getId())) {
+            throw  new OperationNotSupportedException("You cannot update the archived status of book.");
+        }
+        book.setArchived(!book.isArchived());
+        bookRepository.save(book);
+        return book.getId();
+    }
 }
