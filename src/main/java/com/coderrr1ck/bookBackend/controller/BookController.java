@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.OperationNotSupportedException;
 import java.net.URI;
 import java.util.UUID;
 
@@ -83,11 +84,31 @@ public class BookController {
             Authentication connectedUser
     ) {
         return ResponseEntity.ok(bookService.findAllBooksBorrowedByUser(page, size, connectedUser));
+    } // done
+
+    @GetMapping("/returned")
+    public ResponseEntity<PageResponse<BorrowedBookResponseDTO>> findAllBooksReturnedByUser(
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) int size,
+            Authentication connectedUser
+    ) {
+        return ResponseEntity.ok(bookService.findAllBooksReturnedByUser(page, size, connectedUser));
+    } // done
+
+    @PatchMapping("shareable/{book-id}")
+    public ResponseEntity<Void> updateSharable(
+            @PathVariable("book-id") UUID bookId,
+            Authentication authentication
+    ) throws OperationNotSupportedException {
+        UUID updatedBookId = bookService.updateBookSharable(bookId,authentication);
+        return ResponseEntity.created(URI.create(String.valueOf(updatedBookId))).build();
     }
 
 
 
-    @GetMapping("borrow/{id}")
+
+
+            @GetMapping("borrow/{id}")
     public ResponseEntity<Void> borrowBook(
             @PathVariable("id") UUID bookId
     ){

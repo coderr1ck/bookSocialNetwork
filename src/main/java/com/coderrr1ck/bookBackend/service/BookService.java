@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import javax.naming.OperationNotSupportedException;
 import java.util.List;
 import java.util.UUID;
 
@@ -122,5 +123,35 @@ public class BookService {
                 borrowedBooks.isFirst(),
                 borrowedBooks.isLast()
         );
+    }
+
+    public PageResponse<BorrowedBookResponseDTO> findAllBooksReturnedByUser(int page, int size, Authentication connectedUser) {
+        User user = (User) connectedUser.getPrincipal();
+        Pageable pageable = PageRequest.of(page,size,Sort.by("createdDate").descending());
+        Page<BookTransactionHistory> borrowedBooks  = bookTransactionHistoryRepository.findAllBorrowedBooks(pageable,user.getId());
+        List<BorrowedBookResponseDTO> borrowedResponse = borrowedBooks.stream().map(mapper::toBorrowedBookResponse).filter((book)->book.isReturned()).toList();
+        return new PageResponse<>(
+                borrowedResponse,
+                page,
+                size,
+                borrowedBooks.getTotalElements(),
+                borrowedBooks.getTotalPages(),
+                borrowedBooks.isFirst(),
+                borrowedBooks.isLast()
+        );
+    }
+
+
+    public UUID updateBookSharable(UUID bookId, Authentication authentication) throws OperationNotSupportedException {
+        User user  = (User) authentication.getPrincipal();
+        Book book = bookRepository.findById(bookId).orElseThrow(()->{
+           throw  new EntityNotFoundException(BOOK_NOT_FOUND);
+        });
+        if (!book.getOwner().getId().equals(user.getId())) {
+            throw  new OperationNotSupportedException("You cannot update the sharable status of book.");
+        }
+        book.setSharable(!book.isSharable());
+        bookRepository.save(book);
+        return book.getId();
     }
 }
