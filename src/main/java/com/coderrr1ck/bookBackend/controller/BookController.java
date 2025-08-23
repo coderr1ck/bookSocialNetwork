@@ -6,10 +6,10 @@ import com.coderrr1ck.bookBackend.bookDTOs.BookRequestDTO;
 import com.coderrr1ck.bookBackend.bookDTOs.BookResponseDTO;
 import com.coderrr1ck.bookBackend.bookDTOs.BorrowedBookResponseDTO;
 import com.coderrr1ck.bookBackend.service.BookService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.OperationNotSupportedException;
@@ -18,6 +18,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("books")
+@Tag(name = "Books", description = "Book management APIs")
 public class BookController {
 
     private final BookService bookService;
@@ -77,6 +78,7 @@ public class BookController {
     ) {
         return ResponseEntity.ok(bookService.findAllBooksByOwner(page, size, connectedUser));
     }
+
     @GetMapping("/borrowed")
     public ResponseEntity<PageResponse<BorrowedBookResponseDTO>> findAllBooksBorrowedByUser(
             @RequestParam(name = "page", defaultValue = "0", required = false) int page,
@@ -92,7 +94,7 @@ public class BookController {
             @RequestParam(name = "size", defaultValue = "10", required = false) int size,
             Authentication connectedUser
     ) {
-        return ResponseEntity.ok(bookService.findAllBooksReturnedByUser(page, size, connectedUser));
+        return ResponseEntity.ok(bookService.findAllBooksReturnedToUser(page, size, connectedUser));
     } // done
 
     @PatchMapping("shareable/{book-id}")
@@ -114,10 +116,6 @@ public class BookController {
     }
 
 
-
-
-
-
     @PostMapping("borrow/{book-id}")
     public ResponseEntity<Void> borrowBook(
             @PathVariable("book-id") UUID bookId,
@@ -134,6 +132,15 @@ public class BookController {
     ) throws OperationNotSupportedException{
         UUID bthId = bookService.returnBorrowedBook(bookId,authentication);
         return ResponseEntity.created(URI.create(String.valueOf(bthId))).build();
+    }
+
+    @PostMapping("approve/return/borrowed/{book-id}")
+    public ResponseEntity<Void> approveReturnOfBorrowedBook(
+            @PathVariable("book-id") UUID bookId,
+            Authentication authentication
+    ){
+       bookService.approveBookReturn(bookId,authentication);
+       return ResponseEntity.noContent().build();
     }
 
 }

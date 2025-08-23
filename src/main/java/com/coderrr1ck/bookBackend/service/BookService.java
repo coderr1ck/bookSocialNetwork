@@ -29,7 +29,8 @@ import java.util.UUID;
 public class BookService {
     private final String BOOK_NOT_FOUND = "Book Not Found ";
     private final String BOOK_NOT_BORROWABLE = "You cannot borrow this book.";
-    private final String BOOK_NOT_RETURNABLE = "You cananot return this book.";
+    private final String BOOK_NOT_RETURNABLE = "You can not return this book.";
+    private final String BOOK_RETURN_NOT_APPROVABLE = "You can not approve return of this book.";
     private final BookMapper mapper;
     private final BookRepository bookRepository;
     private final BookTransactionHistoryRepository bookTransactionHistoryRepository;
@@ -144,11 +145,11 @@ public class BookService {
         );
     }
 
-    public PageResponse<BorrowedBookResponseDTO> findAllBooksReturnedByUser(int page, int size, Authentication connectedUser) {
+    public PageResponse<BorrowedBookResponseDTO> findAllBooksReturnedToUser(int page, int size, Authentication connectedUser) {
         User user = (User) connectedUser.getPrincipal();
         Pageable pageable = PageRequest.of(page,size,Sort.by("createdDate").descending());
-        Page<BookTransactionHistory> borrowedBooks  = bookTransactionHistoryRepository.findAllBorrowedBooks(pageable,user.getId());
-        List<BorrowedBookResponseDTO> borrowedResponse = borrowedBooks.stream().map(mapper::toBorrowedBookResponse).filter((book)->book.isReturned()).toList();
+        Page<BookTransactionHistory> borrowedBooks  = bookTransactionHistoryRepository.findAllReturnedBooks(pageable,user.getId());
+        List<BorrowedBookResponseDTO> borrowedResponse = borrowedBooks.stream().map(mapper::toBorrowedBookResponse).toList();
         return new PageResponse<>(
                 borrowedResponse,
                 page,
@@ -204,5 +205,24 @@ public class BookService {
         bth.setReturned(true);
         BookTransactionHistory updated_bth = bookTransactionHistoryRepository.save(bth);
         return updated_bth.getId();
+    }
+
+    public void approveBookReturn(UUID bookId, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        Book book = bookRepository.findById(bookId).orElseThrow(()->{
+            throw new EntityNotFoundException(BOOK_NOT_FOUND);
+        });
+        if(book.isArchived() || !book.isSharable()){
+            throw new OperationNotPermittedException(BOOK_RETURN_NOT_APPROVABLE);
+        }
+        if(book.getOwner().getId().equals(user.getId())){
+            BookTransactionHistory bth = bookTransactionHistoryRepository.findByBookIdAndIsReturnApprovedFalseAndIsReturnedTrue(bookId).orElseThrow(()->{
+                throw new EntityNotFoundException(BOOK_RETURN_NOT_APPROVABLE);
+            });
+            bth.setReturnApproved(true);
+            bookTransactionHistoryRepository.save(bth);
+        }else{
+            throw new OperationNotPermittedException(BOOK_RETURN_NOT_APPROVABLE);
+        }
     }
 }
