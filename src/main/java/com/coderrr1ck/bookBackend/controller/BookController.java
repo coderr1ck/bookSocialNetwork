@@ -118,12 +118,22 @@ public class BookController {
 
 
 
-            @GetMapping("borrow/{id}")
+    @PostMapping("borrow/{book-id}")
     public ResponseEntity<Void> borrowBook(
-            @PathVariable("id") UUID bookId
-    ){
-        bookService.borrowBook(bookId);
-        return ResponseEntity.ok().build();
+            @PathVariable("book-id") UUID bookId,
+            Authentication authentication
+    ) throws OperationNotSupportedException{
+        UUID bthId = bookService.borrowBook(bookId,authentication);
+        return ResponseEntity.created(URI.create(String.valueOf(bthId))).build();
+    }
+
+    @PostMapping("return/borrowed/{book-id}")
+    public ResponseEntity<Void> returnBookwedBook(
+            @PathVariable("book-id") UUID bookId,
+            Authentication authentication
+    ) throws OperationNotSupportedException{
+        UUID bthId = bookService.returnBorrowedBook(bookId,authentication);
+        return ResponseEntity.created(URI.create(String.valueOf(bthId))).build();
     }
 
 }

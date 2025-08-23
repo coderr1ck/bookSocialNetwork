@@ -16,8 +16,8 @@ public interface BookRepository extends JpaRepository<Book, UUID> , JpaSpecifica
            Select b from Book b
             where b.archived = false 
             AND b.sharable = true 
-            AND b.createdBy != :userId
+            AND b.owner.id != :userId
             """
     )
-    Page<Book> findAllDisplayableBooks(Pageable pageable,String userId);
+    Page<Book> findAllDisplayableBooks(Pageable pageable,UUID userId);
 }

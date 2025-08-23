@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -19,4 +20,11 @@ public interface BookTransactionHistoryRepository extends JpaRepository<BookTran
             """
     )
     Page<BookTransactionHistory> findAllBorrowedBooks(Pageable pageable,UUID userId);
+
+
+    boolean existsByBookIdAndIsReturnApprovedFalse(UUID bookId);
+//    check book's borrowalbe status
+
+    Optional<BookTransactionHistory> findByBookIdAndUserIdAndIsReturnApprovedFalseAndIsReturnedFalse(UUID bookId, UUID userId);
+// this get's the current active borrow record for a user and a book,
 }
