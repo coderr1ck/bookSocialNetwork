@@ -29,7 +29,7 @@ import java.util.UUID;
 @Service
 public class BookService {
     private static final String BOOK_COVER_NOT_UPLOADABLE = "You cannot upload the book cover.";
-    private final String BOOK_NOT_FOUND = "Book Not Found ";
+    public static final String BOOK_NOT_FOUND = "Book Not Found ";
     private final String BOOK_NOT_BORROWABLE = "You cannot borrow this book.";
     private final String BOOK_NOT_RETURNABLE = "You can not return this book.";
     private final String BOOK_RETURN_NOT_APPROVABLE = "You can not approve return of this book.";
