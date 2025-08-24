@@ -6,11 +6,13 @@ import com.coderrr1ck.bookBackend.bookDTOs.BookRequestDTO;
 import com.coderrr1ck.bookBackend.bookDTOs.BookResponseDTO;
 import com.coderrr1ck.bookBackend.bookDTOs.BorrowedBookResponseDTO;
 import com.coderrr1ck.bookBackend.service.BookService;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.naming.OperationNotSupportedException;
 import java.net.URI;
@@ -141,6 +143,17 @@ public class BookController {
     ){
        bookService.approveBookReturn(bookId,authentication);
        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(value = "upload/cover/{book-id}",consumes = "multipart/form-data")
+    public ResponseEntity<Void> uploadBookCover(
+            @Parameter()
+            @PathVariable("book-id") UUID bookId,
+            Authentication authentication,
+            @RequestPart("file") MultipartFile file
+            ){
+      bookService.uploadBookCover(bookId,authentication,file);
+      return ResponseEntity.accepted().build();
     }
 
 }

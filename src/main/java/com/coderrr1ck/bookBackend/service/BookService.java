@@ -13,7 +13,7 @@ import com.coderrr1ck.bookBackend.models.User;
 import com.coderrr1ck.bookBackend.models.common.BookSpecification;
 import com.coderrr1ck.bookBackend.repository.BookRepository;
 import com.coderrr1ck.bookBackend.repository.BookTransactionHistoryRepository;
-import org.hibernate.cache.spi.support.CacheUtils;
+import jakarta.mail.Multipart;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,23 +21,27 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class BookService {
+    private static final String BOOK_COVER_NOT_UPLOADABLE = "You cannot upload the book cover.";
     private final String BOOK_NOT_FOUND = "Book Not Found ";
     private final String BOOK_NOT_BORROWABLE = "You cannot borrow this book.";
     private final String BOOK_NOT_RETURNABLE = "You can not return this book.";
     private final String BOOK_RETURN_NOT_APPROVABLE = "You can not approve return of this book.";
     private final BookMapper mapper;
+    private final FileService fileService;
     private final BookRepository bookRepository;
     private final BookTransactionHistoryRepository bookTransactionHistoryRepository;
 
-    public BookService(BookRepository bookRepository, BookMapper mapper,BookTransactionHistoryRepository bookTransactionHistoryRepository){
+    public BookService(FileService fileService,BookRepository bookRepository, BookMapper mapper,BookTransactionHistoryRepository bookTransactionHistoryRepository){
         this.mapper  = mapper;
         this.bookRepository = bookRepository;
+        this.fileService = fileService;
         this.bookTransactionHistoryRepository = bookTransactionHistoryRepository;
     }
 
@@ -224,5 +228,19 @@ public class BookService {
         }else{
             throw new OperationNotPermittedException(BOOK_RETURN_NOT_APPROVABLE);
         }
+    }
+
+    public void  uploadBookCover(UUID bookId, Authentication authentication, MultipartFile file) {
+        Book book = bookRepository.findById(bookId).orElseThrow(()-> {
+                    throw new EntityNotFoundException(BOOK_NOT_FOUND);
+                }
+        );
+        User user = (User) authentication.getPrincipal();
+        if(!book.getOwner().getId().equals(user.getId())){
+            throw new OperationNotPermittedException(BOOK_COVER_NOT_UPLOADABLE);
+        }
+        String uploadPath = fileService.saveFile(file,user.getId());
+        book.setBookCover(uploadPath);
+        bookRepository.save(book);
     }
 }

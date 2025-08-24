@@ -3,6 +3,7 @@ package com.coderrr1ck.bookBackend.bookDTOs;
 import com.coderrr1ck.bookBackend.bookDTOs.BookRequestDTO;
 import com.coderrr1ck.bookBackend.models.Book;
 import com.coderrr1ck.bookBackend.models.BookTransactionHistory;
+import com.coderrr1ck.bookBackend.service.FileUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -21,6 +22,7 @@ public class BookMapper {
     }
 
     public BookResponseDTO toBookResponse(Book book) {
+        //                .rate(book.getRate())
         return BookResponseDTO.builder()
                 .id(book.getId())
                 .title(book.getTitle())
@@ -31,7 +33,7 @@ public class BookMapper {
                 .archived(book.isArchived())
                 .shareable(book.isSharable())
                  .owner(book.getOwner().getFullName())
-//                .cover(FileUtils.readFileFromLocation(book.getBookCover()))
+                .cover(FileUtils.readFileFromLocation(book.getBookCover(), book.getId()))
                 .build();
     }
 
