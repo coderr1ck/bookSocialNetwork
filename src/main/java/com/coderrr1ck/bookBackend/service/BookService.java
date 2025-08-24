@@ -46,7 +46,7 @@ public class BookService {
     }
 
 
-    public PageResponse<BookResponseDTO> getAllBooks(int page, int size, Authentication authentication, boolean owner) {
+    public PageResponse<BookResponseDTO> getAllBooks(int page, int size, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         Pageable pageable = PageRequest.of(page,size, Sort.by("createdDate").descending());
         Page<Book> books = bookRepository.findAllDisplayableBooks(pageable,user.getId());

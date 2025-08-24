@@ -33,10 +33,9 @@ public class BookController {
     public ResponseEntity<PageResponse<BookResponseDTO>> getAllBooks(
             @RequestParam(value = "page",defaultValue = "0") int page,
             @RequestParam(value = "size",defaultValue = "10") int size,
-            @RequestParam(value = "owner",defaultValue = "false") boolean owner,
             Authentication authentication
     ){
-        PageResponse<BookResponseDTO> pageResponse = bookService.getAllBooks(page,size,authentication,owner);
+        PageResponse<BookResponseDTO> pageResponse = bookService.getAllBooks(page,size,authentication);
         return ResponseEntity.ok(pageResponse);
     }//done
 
