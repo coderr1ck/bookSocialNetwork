@@ -59,7 +59,7 @@ public class FeedbackService {
         User user = (User) authentication.getPrincipal();
         Pageable pageable = PageRequest.of(page,size, Sort.by("createdDate").descending());
         Page<Feedback> feedbacks = feedbackRepository.findAllByBookId(pageable,bookId);
-        List<FeedbackResponseDTO> feedbackResponseDTOS = feedbacks.stream().map((fb)->mapper.toFeedbackResponse(fb,user.getEmail())).toList();
+        List<FeedbackResponseDTO> feedbackResponseDTOS = feedbacks.stream().map((fb)->mapper.toFeedbackResponse(fb,user)).toList();
         return new PageResponse<FeedbackResponseDTO>(
                 feedbackResponseDTOS,
                 feedbacks.getNumber(),

@@ -110,7 +110,7 @@ public class AuthenticationService {
 
     public ResponseEntity<?> activateAccount(String code){
         Token token = tokenRepository.findByToken(code).orElseThrow(()->
-                new TokenNotFoundException("Invalid Token")
+                new TokenNotFoundException("Invalid Code")
         );
         if(token.getExpiresAt().isAfter(LocalDateTime.now())){
                 var user = userRepository.findById(token.getUser().getId())
@@ -138,7 +138,7 @@ public class AuthenticationService {
                     user.getUsername(),
                     generatedToken,
                     ACCOUNT_ACTIVATION,
-                    CONFIRMATION_URL+"/"+generatedToken);
+                    CONFIRMATION_URL+"/"+user.getEmail());
         } catch (MessagingException e) {
             throw new EmailNotSentException(e.getMessage());
         }

@@ -17,9 +17,9 @@ public interface BookTransactionHistoryRepository extends JpaRepository<BookTran
             Select bth 
             from BookTransactionHistory bth 
             where bth.user.id = :userId
-            AND bth.isReturned = false 
+            AND ( bth.isReturned = false 
             OR bth.isReturnApproved = false
-            """
+            )"""
     )
     Page<BookTransactionHistory> findAllBorrowedBooks(Pageable pageable,UUID userId);
 
@@ -29,16 +29,33 @@ public interface BookTransactionHistoryRepository extends JpaRepository<BookTran
             Select bth 
             from BookTransactionHistory bth 
             where bth.book.owner.id = :userId
+            AND bth.isReturned = true 
+            AND bth.isReturnApproved = false
             """
     )
     Page<BookTransactionHistory> findAllReturnedBooks(Pageable pageable,UUID userId);
 
 
     boolean existsByBookIdAndIsReturnApprovedFalse(UUID bookId);
+    boolean existsByBookIdAndIsReturnApprovedFalseAndIsReturnedTrue(UUID bookId);
 //    check book's borrowalbe status
 
     Optional<BookTransactionHistory> findByBookIdAndUserIdAndIsReturnApprovedFalseAndIsReturnedFalse(UUID bookId, UUID userId);
 
     Optional<BookTransactionHistory> findByBookIdAndIsReturnApprovedFalseAndIsReturnedTrue(UUID bookId);
+
+    @Query(
+            """
+            Select COUNT(bth)>0 
+            from BookTransactionHistory bth 
+            where bth.user.id = :userId
+            AND bth.book.id = :bookId
+            AND ( bth.isReturned = false 
+            OR bth.isReturnApproved = false
+            )"""
+    )
+    boolean existsByBookIdAndUserId(UUID bookId,UUID userId);
+
+    void deleteByBookId(UUID bookId);
 // this get's the current active borrow record for a user and a book,
 }

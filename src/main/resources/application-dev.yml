@@ -53,7 +53,8 @@ application:
       expiration: 36000000
   mailing:
     frontend:
-      activation-url: http://localhost:4003/api/v1/auth/activate-account
+      activation-url: http://localhost:5173/verify
+
 
 server:
   port: 4003

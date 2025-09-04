@@ -1,12 +1,11 @@
 package com.coderrr1ck.bookBackend.bookDTOs;
 
-import com.coderrr1ck.bookBackend.bookDTOs.BookRequestDTO;
 import com.coderrr1ck.bookBackend.models.Book;
 import com.coderrr1ck.bookBackend.models.BookTransactionHistory;
 import com.coderrr1ck.bookBackend.service.FileUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.util.Optional;
 
 @Service
 public class BookMapper {
@@ -31,8 +30,9 @@ public class BookMapper {
                 .synopsis(book.getSynopsis())
 //                .rate(book.getRate())
                 .archived(book.isArchived())
-                .shareable(book.isSharable())
+                .sharable(book.isSharable())
                  .owner(book.getOwner().getFullName())
+                .ownerEmail(book.getOwner().getEmail())
                 .cover(FileUtils.readFileFromLocation(book.getBookCover(), book.getId()))
                 .build();
     }
@@ -44,8 +44,10 @@ public class BookMapper {
                 .authorName(history.getBook().getAuthorName())
                 .isbn(history.getBook().getIsbn())
                 .rate(history.getBook().getRate())
+                .cover(FileUtils.readFileFromLocation(history.getBook().getBookCover(), history.getBook().getId()))
                 .returned(history.isReturned())
                 .returnApproved(history.isReturnApproved())
                 .build();
     }
+
 }

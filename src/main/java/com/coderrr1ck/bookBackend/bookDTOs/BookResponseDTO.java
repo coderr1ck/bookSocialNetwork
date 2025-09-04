@@ -21,6 +21,10 @@ public class BookResponseDTO {
     private byte[] cover;
     private double rate;
     private boolean archived;
-    private boolean shareable;
+    private boolean sharable;
+    private boolean isBorrowed;
+    private boolean isReturnRequested;
+    private String ownerEmail;
+    private boolean Borrower;
 
 }

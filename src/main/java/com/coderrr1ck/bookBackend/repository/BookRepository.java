@@ -20,4 +20,6 @@ public interface BookRepository extends JpaRepository<Book, UUID> , JpaSpecifica
             """
     )
     Page<Book> findAllDisplayableBooks(Pageable pageable,UUID userId);
+
+    boolean existsByIsbn(String isbn);
 }

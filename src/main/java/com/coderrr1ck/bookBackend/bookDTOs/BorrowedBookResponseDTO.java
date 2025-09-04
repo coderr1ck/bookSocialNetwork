@@ -16,5 +16,6 @@ public class BorrowedBookResponseDTO {
     private String isbn;
     private double rate;
     private boolean returned;
+    private byte[] cover;
     private boolean returnApproved;
 }

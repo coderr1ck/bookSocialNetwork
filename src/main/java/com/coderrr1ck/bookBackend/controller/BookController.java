@@ -41,9 +41,10 @@ public class BookController {
 
     @GetMapping("{id}")
     public ResponseEntity<BookResponseDTO> getBookById(
-            @PathVariable("id") UUID bookId
+            @PathVariable("id") UUID bookId,
+            Authentication authentication
     ){
-        return ResponseEntity.ok(bookService.getBookById(bookId));
+        return ResponseEntity.ok(bookService.getBookById(bookId,authentication));
     } // done
 
     @PutMapping("{id}")
@@ -51,7 +52,8 @@ public class BookController {
             @PathVariable("id") UUID bookId,
             @Valid @RequestBody BookRequestDTO bookRequestDTO
     ){
-        return bookService.updateBookById(bookId,bookRequestDTO);
+        UUID updatedBookId = bookService.updateBookById(bookId,bookRequestDTO);
+        return ResponseEntity.created(URI.create(String.valueOf(updatedBookId))).build();
     }
 
     @PostMapping

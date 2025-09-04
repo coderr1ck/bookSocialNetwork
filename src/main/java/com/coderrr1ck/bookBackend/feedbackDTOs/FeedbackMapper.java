@@ -3,6 +3,7 @@ package com.coderrr1ck.bookBackend.feedbackDTOs;
 
 import com.coderrr1ck.bookBackend.models.Book;
 import com.coderrr1ck.bookBackend.models.Feedback;
+import com.coderrr1ck.bookBackend.models.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -22,11 +23,12 @@ public class FeedbackMapper {
                 .build();
     }
 
-    public FeedbackResponseDTO toFeedbackResponse(Feedback feedback, String owner) {
+    public FeedbackResponseDTO toFeedbackResponse(Feedback feedback, User owner) {
         return FeedbackResponseDTO.builder()
                 .note(feedback.getNote())
                 .comment(feedback.getComment())
-                .ownFeedback(Objects.equals(feedback.getCreatedBy(), owner))
+                .user(owner.getFullName())
+                .ownFeedback(Objects.equals(feedback.getCreatedBy(), owner.getEmail()))
                 .build();
     }
 }

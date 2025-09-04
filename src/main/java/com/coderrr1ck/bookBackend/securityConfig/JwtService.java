@@ -20,7 +20,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
     @Value("${application.security.jwt.expiration}")
-    private long jwtExpiration= 1000 * 60 * 60 * 10; // 10 hours
+    private long jwtExpiration= 1000 * 60; // 10 hours
 
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;

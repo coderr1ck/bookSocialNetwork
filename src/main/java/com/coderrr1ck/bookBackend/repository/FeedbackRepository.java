@@ -12,4 +12,5 @@ import java.util.UUID;
 @Repository
 public interface FeedbackRepository extends JpaRepository<Feedback, UUID> {
     Page<Feedback> findAllByBookId(Pageable pageable, UUID bookId);
+    void deleteByBookId(UUID bookId);
 }
