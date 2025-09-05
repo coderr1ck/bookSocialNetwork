@@ -1,6 +1,7 @@
 package com.coderrr1ck.bookBackend.beansConfig;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -20,12 +21,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Configuration
 @RequiredArgsConstructor
 public class BeansConfig {
 
     private final UserDetailsService userDetailsService;
+    @Value("${ALLOWED_ORIGINS:http://localhost:5173}")
+    private String allowedOrigins;
 
     @Bean
     public AuthenticationProvider myAuthenticationProvider() {
@@ -55,7 +59,10 @@ public class BeansConfig {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://192.168.1.7:5173","http://localhost:4173","http://localhost:5173"));
+        List<String> origins = Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .collect(Collectors.toList());
+        config.setAllowedOrigins(origins);
         config.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.ORIGIN,
                 HttpHeaders.CONTENT_TYPE,
