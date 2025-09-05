@@ -3,7 +3,7 @@ spring:
   application:
     name: BookBackend
   profiles:
-    active: dev  # Activates the 'dev' profile, loads application-dev.yml if present
+    active: prod  # Activates the 'dev' profile, loads application-dev.yml if present
 
   servlet:
     multipart:

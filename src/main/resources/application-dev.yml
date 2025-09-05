@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:4078/authdb
+    url: jdbc:postgresql://book-db:5432/authdb
     username: root
     password: password
     driver-class-name: org.postgresql.Driver
@@ -36,12 +36,6 @@ spring:
         timeout: 3000
         writetimeout: 5000
 
-
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: "http://localhost:9090/realms/book-social-network"
 
 application:
   file:

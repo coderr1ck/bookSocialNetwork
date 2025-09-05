@@ -27,9 +27,9 @@ public class JwtService {
 
     @PostConstruct
     public void checkFields(){
-        System.out.println("JwtService initialized with:");
-        System.out.println("JwtExpiration : "+ jwtExpiration);
-        System.out.println("SecretKey : "+ secretKey);
+//        System.out.println("JwtService initialized with:");
+//        System.out.println("JwtExpiration : "+ jwtExpiration);
+//        System.out.println("SecretKey : "+ secretKey);
     }
 
     public String extractUsername(String token) {

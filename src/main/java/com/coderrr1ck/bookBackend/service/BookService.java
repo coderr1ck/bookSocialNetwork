@@ -106,8 +106,8 @@ public class BookService {
         boolean isBorrowed = bookTransactionHistoryRepository.existsByBookIdAndIsReturnApprovedFalse(book.getId());
         boolean isReturnRequested = bookTransactionHistoryRepository.existsByBookIdAndIsReturnApprovedFalseAndIsReturnedTrue(book.getId());
         boolean isUserBorrower = bookTransactionHistoryRepository.existsByBookIdAndUserId(book.getId(),user.getId());
-        System.out.println("Book  : "+book.getId());
-        System.out.println("User : "+user.getId());
+//        System.out.println("Book  : "+book.getId());
+//        System.out.println("User : "+user.getId());
 
         BookResponseDTO bookResponseDTO = mapper.toBookResponse(book);
         bookResponseDTO.setBorrowed(isBorrowed);
