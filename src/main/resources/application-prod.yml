@@ -34,6 +34,7 @@ spring:
             required: true
           ssl:
             trust: smtp.gmail.com
+          debug: true
             
         connectiontimeout: 5000
         timeout: 5000
