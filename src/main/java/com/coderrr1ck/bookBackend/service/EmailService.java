@@ -39,6 +39,7 @@ public class EmailService {
         helper.setSubject(subject);
         helper.setText(template,true);
         javaMailSender.send(mimeMessage);
+        System.out.println("Sending email to user : "+subject);
 
     }
 }
